@@ -47,7 +47,7 @@
                                 <div class="card bg-danger text-white mb-4">
                                     <div class="card-body"> {{ App\Models\User::count() }} Users</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="{{ url('user') }}">View Details</a>
+                                        <a class="small text-white stretched-link" href="{{ url('admin/user') }}">View Details</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
@@ -88,7 +88,15 @@
                                             <td>{{ $post->category->title }}</td>
                                             <td>{{ $post->title }}</td>
                                             <td><img src="{{ asset('images'.'/'.$post->thumb) }}" alt="Image" width="100"></td>
-                                            <td><img src="{{ asset('images'.'/'.$post->full_img) }}" alt="Image" width="100"></td>
+                                            <td class="w-25">
+                                                @php
+                                                    $image = DB::table('posts')->where('id',$post->id)->first();
+                                                    $images = explode('|', $image->full_img);
+                                                @endphp
+                                                    @foreach ($images as $item)
+                                                        <img src="{{ URL::to($item) }}" class="card-img-top m-2 w-25" alt="...">
+                                                    @endforeach
+                                                </td>
                                             <td>
                                                 <a href="{{ url('admin/post/'.$post->id.'/edit') }}" class="btn btn-info btn-sm">Edit</a>
                                                 <a href="{{ url('admin/post/'.$post->id.'/delete') }}" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger btn-sm">Delete</a>

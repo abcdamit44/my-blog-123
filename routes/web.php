@@ -22,7 +22,7 @@ Route::get('/', [HomeController::class,'index']);
 Route::get('/detail/{slug}/{id}', [HomeController::class,'detail']);
 Route::get('/category/{slug}/{id}', [HomeController::class,'category']);
 Route::get('/all-categories', [HomeController::class,'all_categories']);
-Route::post('/save-comment/{slug}/{id}', [HomeController::class,'save_comment']);
+Route::get('/save-comment/{slug}/{id}', [HomeController::class,'save_comment']);
 Route::get('/save-post-form', [HomeController::class,'save_post_form']);
 Route::post('/save-post-form', [HomeController::class,'save_post_data']);
 Route::get('/manage-posts', [HomeController::class,'manage_posts']);

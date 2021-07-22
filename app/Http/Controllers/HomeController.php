@@ -79,22 +79,30 @@ class HomeController extends Controller
             $newThumbimage = "N/A";
         }
 
-        // Full image
-        if ($request->hasFile('post_image')) {
-            $image = $request->file('post_image');
-            $newFullimage = time(). rand(1,1000) . ".". $image->getClientOriginalExtension();
-            $image->move(public_path('/images'), $newFullimage);
-        }else{
-            $newThumbimage = "N/A";
-        }
+       // Full image
+       $photo = array();
+       if ($images = $request->file('post_image')) {
+           foreach ($images as $image) {
+               // $image = $request->file('post_image');
+               $ext = strtolower($image->getClientOriginalExtension());
+               $newFullimage = time(). rand(1,1000) . ".". $ext;
+               $upload_path = 'images/';
+               $images_url = $upload_path.$newFullimage;
+               // dd($images_url);
+               $image->move($upload_path, $newFullimage);
+               $photo[] = $images_url;
+           }
 
+       }else{
+           $newFullimage = $request->post_image;
+       }
         $post = new Post;
 
         $post->user_id = $request->user()->id;
         $post->cat_id = $request->category;
         $post->title = $request->title;
         $post->thumb = $newThumbimage;
-        $post->full_img = $newFullimage;
+        $post->full_img = implode('|' , $photo);
         $post->detail = $request->detail;
         $post->tags = $request->tags;
         $post->status = 1;

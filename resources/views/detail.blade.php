@@ -14,9 +14,19 @@
         </div>
         
         <div class="text-center">
-            <img src="{{ asset('images') }}/{{ $detail->full_img }}" class="img-thumbnail w-50" alt="{{ $detail->title }}">
+            <img src="{{ asset('images') }}/{{ $detail->thumb }}" class="img-thumbnail w-50" alt="{{ $detail->title }}">
         </div>
         <h1 class="text-center mt-4"> {{ $detail->title }} <span class="float-right badge rounded-pill bg-primary fs-6 align-items-center ">Total views = {{ $detail->views }}</span></h1>
+
+        <div class="d-flex flex-row justify-content-center">
+                @php
+                    $image = DB::table('posts')->where('id',$detail->id)->first();
+                    $images = explode('|', $image->full_img);
+                @endphp
+                    @foreach ($images as $item)
+                        <img src="{{ URL::to($item) }}" class="card-img-top m-2 w-25" alt="...">
+                    @endforeach
+        </div>
 
         <div class="w-100 text-center">
             {{ $detail->detail }}

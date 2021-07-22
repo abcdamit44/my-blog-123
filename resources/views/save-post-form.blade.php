@@ -47,7 +47,7 @@
                   </div>
 
                   <div class="input-group mb-3">
-                    <input type="file" class="form-control" id="post_image" name="post_image">
+                    <input type="file" class="form-control" id="post_image" name="post_image[]" multiple>
                     <label class="input-group-text" for="post_image">Full Image</label>
                   </div>
 

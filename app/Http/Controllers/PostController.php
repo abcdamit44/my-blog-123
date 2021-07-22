@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Post;
 
@@ -15,9 +16,13 @@ class PostController extends Controller
      */
     public function index()
     {
+        // $image = DB::table('posts')->where('id',12)->first();
+        // $images = explode('|', $image->full_img);
+        // dd($images);
         $data = Post::all();
         return view('backend.post.index',[
-            'data' => $data
+            'data' => $data,
+            // 'images' => $images,
         ]);
     }
 
@@ -57,10 +62,19 @@ class PostController extends Controller
         }
 
         // Full image
-        if ($request->hasFile('post_image')) {
-            $image = $request->file('post_image');
-            $newFullimage = time(). rand(1,1000) . ".". $image->getClientOriginalExtension();
-            $image->move(public_path('/images'), $newFullimage);
+        $photo = array();
+        if ($images = $request->file('post_image')) {
+            foreach ($images as $image) {
+                // $image = $request->file('post_image');
+                $ext = strtolower($image->getClientOriginalExtension());
+                $newFullimage = time(). rand(1,1000) . ".". $ext;
+                $upload_path = 'images/';
+                $images_url = $upload_path.$newFullimage;
+                // dd($images_url);
+                $image->move($upload_path, $newFullimage);
+                $photo[] = $images_url;
+            }
+
         }else{
             $newThumbimage = "N/A";
         }
@@ -71,7 +85,7 @@ class PostController extends Controller
         $post->cat_id = $request->category;
         $post->title = $request->title;
         $post->thumb = $newThumbimage;
-        $post->full_img = $newFullimage;
+        $post->full_img = implode('|' , $photo);
         $post->detail = $request->detail;
         $post->tags = $request->tags;
         $post->save();
@@ -131,10 +145,19 @@ class PostController extends Controller
         }
 
         // Full image
-        if ($request->hasFile('post_image')) {
-            $image = $request->file('post_image');
-            $newFullimage = time(). rand(1,1000) . ".". $image->getClientOriginalExtension();
-            $image->move(public_path('/images'), $newFullimage);
+        $photo = array();
+        if ($images = $request->file('post_image')) {
+            foreach ($images as $image) {
+                // $image = $request->file('post_image');
+                $ext = strtolower($image->getClientOriginalExtension());
+                $newFullimage = time(). rand(1,1000) . ".". $ext;
+                $upload_path = 'images/';
+                $images_url = $upload_path.$newFullimage;
+                // dd($images_url);
+                $image->move($upload_path, $newFullimage);
+                $photo[] = $images_url;
+            }
+
         }else{
             $newFullimage = $request->post_image;
         }
@@ -143,7 +166,7 @@ class PostController extends Controller
         $post->cat_id = $request->category;
         $post->title = $request->title;
         $post->thumb = $newThumbimage;
-        $post->full_img = $newFullimage;
+        $post->full_img = implode('|' , $photo);
         $post->detail = $request->detail;
         $post->tags = $request->tags;
         $post->save();

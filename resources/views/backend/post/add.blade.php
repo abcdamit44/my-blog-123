@@ -45,7 +45,7 @@
                         <p class="form-label h5" for="title">Title <span class="text-danger">*</span></p> 
                         <input type="text" class="form-control @error('title')
                         border border-danger
-                    @enderror"" id="title" name="title">
+                    @enderror" id="title" name="title">
                         @error('title')
                             <p class="text-danger">{{ $message }}</p>
                         @enderror
@@ -57,7 +57,7 @@
                       </div>
 
                       <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="post_image" name="post_image">
+                        <input type="file" class="form-control" id="post_image" name="post_image[]" multiple>
                         <label class="input-group-text" for="post_image">Full Image</label>
                       </div>
 

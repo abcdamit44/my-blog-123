@@ -77,8 +77,8 @@
                         <img src="{{ asset('images') }}/{{ $data->full_img }}" alt="" width="100">
                     </p>
                     <div class="input-group mb-3">
-                        <input type="hidden" value="{{ $data->full_img }}" name="post_image">
-                        <input type="file"  name="post_image">
+                        <input type="hidden" value="{{ $data->full_img }}" name="post_image[]" multiple>
+                        <input type="file"  name="post_image[]" multiple>
                         <label class="input-group-text" for="post_image">Full Image</label>
                       </div>
                       @error('post_image')
