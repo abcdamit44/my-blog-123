@@ -14,7 +14,11 @@
         </div>
         
         <div class="text-center">
-            <img src="{{ asset('images') }}/{{ $detail->thumb }}" class="img-thumbnail w-50" alt="{{ $detail->title }}">
+            @if($detail->thumb)
+            <a href="{{ asset('images') }}/{{ $detail->thumb }}" class="fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
+                <img src="{{ asset('images') }}/{{ $detail->thumb }}" class="card-img-top w-50" alt="{{ $detail->title }}">
+            </a>
+            @endif
         </div>
         <h1 class="text-center mt-4"> {{ $detail->title }} <span class="float-right badge rounded-pill bg-primary fs-6 align-items-center ">Total views = {{ $detail->views }}</span></h1>
 
@@ -24,7 +28,18 @@
                     $images = explode('|', $image->full_img);
                 @endphp
                     @foreach ($images as $item)
-                        <img src="{{ URL::to($item) }}" class="card-img-top m-2 w-25" alt="...">
+                    @if (getimagesize($item))
+
+                    <a href="{{ URL::to($item) }}" class=" m-2 w-25 fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
+                        <img src="{{ URL::to($item) }}" class="card-img-top" alt="...">
+                    </a>
+                    @else
+                    <a href="{{ URL::to($item) }}" class=" m-2 w-25 fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
+                        <video width="320" height="240">
+                            <source src="{{ URL::to($item) }}" class="card-img-top" type="video/mp4">
+                        </video>
+                    </a>
+                    @endif
                     @endforeach
         </div>
 
