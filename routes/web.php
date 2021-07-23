@@ -32,6 +32,8 @@ Route::get('/manage-posts/{id}/edit', [HomeController::class,'manage_posts_edit'
 Route::put('/manage-posts/{id}', [HomeController::class,'manage_posts_update']);
 
 // Admin
+Route::get('/admin/register', [AdminController::class,'register']);
+Route::post('/admin/register', [AdminController::class,'create_admin']);
 Route::get('/admin/login', [AdminController::class,'login']);
 Route::get('/admin/logout', [AdminController::class,'logout']);
 Route::post('/admin/login', [AdminController::class,'login_submit']);

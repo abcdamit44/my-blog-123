@@ -7,12 +7,39 @@ use App\Models\Admin;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 
 class AdminController extends Controller
 {
     public function login()
     {
         return view('backend.login');
+    }
+
+    public function register()
+    {
+        return view('backend.register');
+    }
+
+    public function create_admin(Request $request)
+    {
+        // Validation
+        $this->validate($request, [
+            'username' => 'required | max:25',
+            'password' => 'required | confirmed',
+        ]);
+// dd("safe");
+        // Store User
+        Admin::create([
+            'username'=>$request->username,
+            'password'=>Hash::make($request->password),
+        ]);
+
+        // Sign the user in
+
+        // Redirect
+        return redirect('admin/login');
     }
 
     public function login_submit(Request $request)
