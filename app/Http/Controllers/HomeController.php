@@ -19,11 +19,6 @@ class HomeController extends Controller
         else{
             $posts = Post::orderBy('id','desc')->paginate(10);
             if($request->ajax()){
-                // return [
-                //     'posts' => view('posts')->with(compact('posts'))->render(),
-                //     'next_page' => $posts->nextPageUrl()
-                // ];
-
                 $view = view('posts',compact('posts'))->render();
                 return response()->json(['html'=>$view]);
             }
@@ -107,7 +102,7 @@ class HomeController extends Controller
             $newThumbimage = 0;
         }
 
-       // Full image
+       // Multiple images
        $photo = array();
        if ($images = $request->file('post_image')) {
            foreach ($images as $image) {
@@ -142,7 +137,72 @@ class HomeController extends Controller
     public function manage_posts(Request $request)
     {
         $data = Post::where('user_id',$request->user()->id)->orderBy('id','desc')->get();
-        return view('manage-posts',['data'=> $data]);
+        return view('user_dashboard.manage-posts',['data'=> $data]);
     }
+
+
+    public function manage_posts_edit($id)
+    {
+        $cats = Category::all();
+        $data = Post::find($id);
+        return view('user_dashboard.update',[
+            'data' => $data,
+            'cats' => $cats
+        ]);
+    }
+
+    
+    public function manage_posts_update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required',
+            'category' => 'required',
+            'detail' => 'required'
+        ]);
+
+        // Thumbnail image
+        if ($request->hasFile('post_thumb')) {
+            $image = $request->file('post_thumb');
+            $newThumbimage = time(). rand(1,1000) . ".". $image->getClientOriginalExtension();
+            $image->move(public_path('/images'), $newThumbimage);
+        }else{
+            $newThumbimage = $request->post_thumb;
+        }
+
+        // Full image
+        $photo = array();
+        if ($images = $request->file('post_image')) {
+            foreach ($images as $image) {
+                // $image = $request->file('post_image');
+                $ext = strtolower($image->getClientOriginalExtension());
+                $newFullimage = time(). rand(1,1000) . ".". $ext;
+                $upload_path = 'images/';
+                $images_url = $upload_path.$newFullimage;
+                // dd($images_url);
+                $image->move($upload_path, $newFullimage);
+                $photo[] = $images_url;
+            }
+
+        }else{
+            $newFullimage = $request->post_image;
+        }
+
+        $post = Post::find($id);
+        $post->cat_id = $request->category;
+        $post->title = $request->title;
+        $post->thumb = $newThumbimage;
+        $post->full_img = implode('|' , $photo);
+        $post->detail = $request->detail;
+        $post->tags = $request->tags;
+        $post->save();
+
+        return redirect('manage-posts/'.$id.'/edit')->with('success', "Data has been updated");
+    }
+
+    public function manage_posts_delete($id){
+        Post::where('id',$id)->delete();
+        return redirect('/manage-posts');
+    }
+
 
 }

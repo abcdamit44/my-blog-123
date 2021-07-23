@@ -27,6 +27,9 @@ Route::post('/comment/comment_reply/{comment}', [HomeController::class,'save_com
 Route::get('/save-post-form', [HomeController::class,'save_post_form']);
 Route::post('/save-post-form', [HomeController::class,'save_post_data']);
 Route::get('/manage-posts', [HomeController::class,'manage_posts']);
+Route::get('/manage-posts/{id}/delete', [HomeController::class,'manage_posts_delete']);
+Route::get('/manage-posts/{id}/edit', [HomeController::class,'manage_posts_edit']);
+Route::put('/manage-posts/{id}', [HomeController::class,'manage_posts_update']);
 
 // Admin
 Route::get('/admin/login', [AdminController::class,'login']);
