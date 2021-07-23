@@ -8,7 +8,7 @@
             <div class="container p4">
                 <div class="d-flex justify-content-between">
                     <h2 class="m-3 d-inline">Update Post</h2>
-                    <a href="{{ url('admin/post') }}" class="btn btn-primary m-3">All Data</a>
+                    <a href="{{ url('/manage-posts') }}" class="btn btn-primary m-3">All Data</a>
                 </div>
                 
                 @if ($errors)

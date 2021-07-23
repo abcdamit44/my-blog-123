@@ -28,18 +28,21 @@
                     $images = explode('|', $image->full_img);
                 @endphp
                     @foreach ($images as $item)
-                    @if (getimagesize($item))
+                    @if ($item)
+                        @if (getimagesize($item))
 
-                    <a href="{{ URL::to($item) }}" class=" m-2 w-25 fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
-                        <img src="{{ URL::to($item) }}" class="card-img-top" alt="...">
-                    </a>
-                    @else
-                    <a href="{{ URL::to($item) }}" class=" m-2 w-25 fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
-                        <video width="320" height="240">
-                            <source src="{{ URL::to($item) }}" class="card-img-top" type="video/mp4">
-                        </video>
-                    </a>
+                        <a href="{{ URL::to($item) }}" class=" m-2 w-25 fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
+                            <img src="{{ URL::to($item) }}" class="card-img-top" alt="...">
+                        </a>
+                        @else
+                        <a href="{{ URL::to($item) }}" class=" m-2 w-25 fancybox" data-caption="{{ $detail->title }}" data-id="{{ $detail->id }}" data-fancybox="all">
+                            <video width="320" height="240">
+                                <source src="{{ URL::to($item) }}" class="card-img-top" type="video/mp4">
+                            </video>
+                        </a>
+                        @endif
                     @endif
+                    
                     @endforeach
         </div>
 
