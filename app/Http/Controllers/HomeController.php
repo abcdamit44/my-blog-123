@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\CommentReply;
 
 class HomeController extends Controller
 {
@@ -16,7 +17,19 @@ class HomeController extends Controller
             $posts = Post::where('title','like','%'.$q .'%')->orderBy('id','desc')->paginate(10);
         }
         else{
-            $posts = Post::orderBy('id','desc')->paginate(1);
+            $posts = Post::orderBy('id','desc')->paginate(10);
+            if($request->ajax()){
+                // return [
+                //     'posts' => view('posts')->with(compact('posts'))->render(),
+                //     'next_page' => $posts->nextPageUrl()
+                // ];
+
+                $view = view('posts',compact('posts'))->render();
+                return response()->json(['html'=>$view]);
+            }
+
+            return view('home')->with(compact('posts'));
+
         }
         return view('home',['posts'=>$posts]);
     }
@@ -31,13 +44,13 @@ class HomeController extends Controller
     public function category(Request $request, $cat_slug, $cat_id)
     {
         $category = Category::find($cat_id);
-        $posts = Post::where('cat_id',$cat_id)->orderBy('id','desc')->paginate(1);
+        $posts = Post::where('cat_id',$cat_id)->orderBy('id','desc')->paginate(10);
         return view('category',['posts'=>$posts, 'category'=>$category]);
     }
 
     public function all_categories()
     {
-        $categories = Category::orderBy('id','desc')->paginate(5);
+        $categories = Category::orderBy('id','desc')->paginate(2);
         return view('categories',['categories'=>$categories]);
     }
 
@@ -54,6 +67,21 @@ class HomeController extends Controller
         $data->save();
 
         return redirect('detail/'.$slug.'/'.$id)->with('success','Comment has been submitted!');
+    }
+
+    public function save_comment_replies(Request $request,$comment)
+    {
+        $request->validate([
+            'comment_reply' => 'required',
+        ]);
+
+        $data = new CommentReply;
+        $data->user_id = $request->user()->id;
+        $data->comment_id = $comment;
+        $data->message = $request->comment_reply;
+        $data->save();
+
+        return back()->with('success','Comment Reply has been submitted!');
     }
 
     public function save_post_form()
@@ -76,7 +104,7 @@ class HomeController extends Controller
             $newThumbimage = time(). rand(1,1000) . ".". $image->getClientOriginalExtension();
             $image->move(public_path('/images'), $newThumbimage);
         }else{
-            $newThumbimage = "N/A";
+            $newThumbimage = 0;
         }
 
        // Full image

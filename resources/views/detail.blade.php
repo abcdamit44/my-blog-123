@@ -37,9 +37,65 @@
         </div>
         <hr>
 
+        
+
+        {{-- Fetch Comments --}}
+        <div class="card my-5 m-auto">
+            <div class="card-header">
+                <h5 class="h5">Comments <span class="badge bg-dark">{{ count($detail->comments) }}</span></h5>
+            </div>
+            <div class="card-body">
+                @if ($detail->comments)
+                    @foreach ($detail->comments as $comment)
+
+                      <div class="shadow my-3 ">
+                          <div class="d-flex align-items-center">
+                            <h3 class="mx-3"> {{ $comment->user->name }}</h3>
+                            <small>{{ $comment->user->created_at->diffForHumans() }}</small>  
+                          </div>
+                        <div class="p-3">
+                            <div class="p-3">
+                            <div class="m-1 border rounded bg-light p-3">
+                                {{ $comment->comment }}
+                                </div>
+                            </div>
+                            @auth
+                                
+                        
+                        </div>
+                        <div class="mx-5 p-3">
+                            @if ($comment->replies->count())
+                            @foreach ($comment->replies as $reply)
+                            <div class="d-flex align-items-center">
+                                <h5 class="me-1">{{ $reply->user->name }}</h5>
+                                <small>{{ $reply->created_at->diffForHumans() }}</small>  
+                            </div>
+                            <div class="m-1 border rounded bg-light p-3">
+                                {{ $reply->message }}
+                            </div>
+                            @endforeach
+                            @else
+                                <p class="text-dark">No Reply</p>
+                            @endif
+                            
+                            <form action="{{ url('/comment/comment_reply/'.$comment->id)  }}"  method="POST" class="mt-2 d-flex justify-content-between p-2">
+                                @csrf
+                                <input type="text" name="comment_reply" class="form-control" placeholder="Reply">
+                                <button type="submit" class="btn btn-dark mx-2">Send</button>
+                            </form>
+                        </div>
+                        @endauth
+
+                      </div>
+
+                    @endforeach
+                @endif
+            </div>
+        </div>
+
         {{-- Add Comment --}}
-        @auth
-        <div class="card my-3 w-50 m-auto">
+        
+        <div class="card my-3 m-auto">
             <div class="card-header">
                 <h5>Add Comment</h5>
             </div>
@@ -51,34 +107,8 @@
                 </form>
             </div>
         </div>
-        @endauth
-
-        {{-- Fetch Comments --}}
-        <div class="card my-5 w-50 m-auto">
-            <div class="card-header">
-                <h5 class="h5">Comments <span class="badge bg-dark">{{ count($detail->comments) }}</span></h5>
-            </div>
-            <div class="card-body">
-                @if ($detail->comments)
-                    @foreach ($detail->comments as $comment)
-                    <figure>
-                        <blockquote class="blockquote">
-                          <p>{{ $comment->comment }}</p>
-                        </blockquote>
-                        @if ($comment->user_id == 0)
-                        <figcaption class="blockquote-footer">
-                            Admin
-                          </figcaption>
-                        @else
-                        <figcaption class="blockquote-footer">
-                            {{ $comment->user->name }}
-                          </figcaption> 
-                        @endif
-                        
-                      </figure>
-                    @endforeach
-                @endif
-            </div>
-        </div>
+       
+        <br>
+        
     </div>
 @endsection

@@ -15,34 +15,25 @@
 {{-- Post Section Start  --}}
 
         <div class="col-md-8">
+            <div id="post-data">
             @if ($posts->count())
-                @foreach ($posts as $post)
-                <div class="row">
-                    <div class="card p-0 mb-5">
-                        <img src="{{ asset('images') }}/{{ $post->thumb }}" class="card-img-top" alt="{{ $post->title }}" width="200">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ $post->title }}</h5>
-                        <p class="card-text">{{ $post->detail }}</p>
-                        <a href="{{ url('detail/'. Str::slug($post->title). '/' .$post->id) }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-                {{-- Pagination start --}}
-
-                {{ $posts->links() }}
-
-                {{-- Pagination end --}}
+                @include('posts')
             @else
                 <p class="alert alert-danger">No Post Found !</p>
             @endif
         </div>
+        {{-- <div class="ajax-load text-center w-25 d-flex justify-content-center m-auto" style="display: none !impotant">
+            <img src="{{ asset('gifs/loader.gif') }}" alt="loader" class="w-50">
+        </div> --}}
+        </div>
+
+       
 
 {{-- Post Section End --}}
 
 {{-- Right Sidebar Start --}}
 
-        <div class="col-md-4">
+        <div class="col-md-4 d-none d-sm-block">
 
             {{-- Search section Start --}}
 
@@ -101,5 +92,38 @@
 </main>
 
 {{-- Post Section End --}}
+
+
+<script>
+function loadMoreData(page){
+    $.ajax({
+        url: "?page=" + page,
+        type: 'get',
+        beforeSend: function(){
+            $(".ajax-load").show();
+        }
+    })
+    .done(function(data){
+        if(data.html == " "){
+            $(".ajax-load").html("No more records found");
+            return;
+        }
+        $('.ajax-load').css('display','none !impotant');
+        $("#post-data").append(data.html);
+    })
+    .fail(function (jqXHR, ajaxOptions, thrownError) {
+        alert('Server not responding...')
+    });
+}
+
+var page = 1;
+$(window).scroll(function(){
+    if($(window).scrollTop() + $(window).height() >= $(document).height()){
+    page++;
+    loadMoreData(page);
+}
+});
+
+</script>
 
 @endsection
