@@ -25,9 +25,9 @@
                 <main>
                     <div class="container">
                         <div class="row justify-content-center">
-                            <div class="col-lg-5">
+                            <div class="col-lg-10">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-1">Login</h3></div>
                                     <div class="card-body">
                                         @if ($errors)
                                             @foreach ($errors as $error)
@@ -41,24 +41,52 @@
 
                                         <form method="post">
                                             @csrf
-                                            <div class="mb-3">
-                                              <label for="username" class="form-label">Username</label>
-                                              <input type="text" class="form-control" id="username" name="username" class="@error('username')
+                                            <div class="row">
+
+                                            <div class="mb-3 col">
+                                              <label for="name" class="form-label">Name</label>
+                                              <input type="text" class="form-control" id="name" name="name" class="@error('name')
                                               border-red
-                                          @enderror" value="{{  old('username')  }}">
-                                              @error('username')
+                                          @enderror" value="{{  old('name')  }}">
+                                              @error('name')
+                                                  <p class="text-danger">{{ $message }}</p>
+                                              @enderror
+                                            </div>
+
+
+                                            <div class="mb-3 col">
+                                              <label for="email" class="form-label">Email</label>
+                                              <input type="text" class="form-control" name="email" class="@error('email')
+                                              border-red
+                                            @enderror" value="{{  old('email')  }}">
+                                              @error('email')
+                                                  <p class="text-danger">{{ $message }}</p>
+                                              @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                        
+                                            <div class="mb-3 col">
+                                              <label for="role" class="form-label">Role</label>
+                                            <select name="role" class="form-select  ">
+                                                <option value="0">User</option>
+                                                <option value="1">Admin</option>
+                                            </select>
+                                              @error('role')
                                                   <p class="text-danger">{{ $message }}</p>
                                               @enderror
                                             </div>
                                             
-                                            <div class="mb-3">
+                                            <div class="mb-3 col">
                                               <label for="exampleInputPassword1" class="form-label">Password</label>
                                               <input type="password" class="form-control" name="password" id="exampleInputPassword1">
                                               @error('password')
                                                   <p class="text-danger">{{ $message }}</p>
                                               @enderror
                                             </div>
-                                            <div class="mb-3">
+                                            <div class="mb-3 col">
                                                 <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
                                                 <input type="password" class="form-control" name="password_confirmation" id="exampleInputPassword1"  class="@error('password_confirmation')
                                                 border-red
@@ -67,6 +95,7 @@
                                                     <p class="text-danger">{{ $message }}</p>
                                                 @enderror
                                               </div>
+                                            </div>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                           </form>
                                     </div>

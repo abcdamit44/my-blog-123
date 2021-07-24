@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Auth;
 
 
 class AdminController extends Controller
@@ -26,38 +27,58 @@ class AdminController extends Controller
     {
         // Validation
         $this->validate($request, [
-            'username' => 'required | max:25',
+            'name' => 'required | max:255',
+            'email' => 'required | max:255 | email',
+            'role' => 'required',
             'password' => 'required | confirmed',
         ]);
-// dd("safe");
+
+        // dd('store');
+
         // Store User
-        Admin::create([
-            'username'=>$request->username,
-            'password'=>Hash::make($request->password),
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email, 
+            'role' => $request->role,
+            'password'=>Hash::make($request['password']),
         ]);
 
-        // Sign the user in
-
-        // Redirect
-        return redirect('admin/login');
+        $userCheck =  auth()->attempt($request->only('email','password'));
+        
+        if($userCheck && $request->role == 1){
+            $adminData = auth()->attempt($request->only('email','password'));
+            session(['adminData'=>$adminData]);
+            return redirect('admin/dashboard');
+        }
+        else{
+            return redirect('admin/login')->with('error','Invalid Credentials!!');
+        }
     }
 
     public function login_submit(Request $request)
     {
         $request->validate([
-            'username' => 'required',
+            'email' => 'required | email',
             'password' => 'required'
         ]);   
         
-        $userCheck = Admin::where(['username'=>$request->username,'password'=>$request->password])->count();
+        $userCheck = Admin::where(['email'=>$request->email,'password'=>$request->password])->count();
+        $userCheck2 = auth()->attempt($request->only('email','password'));
 
-        if($userCheck>0){
-            $adminData = Admin::where(['username'=>$request->username,'password'=>$request->password])->first();
+        if($userCheck>0 || $userCheck2){
+            if ($userCheck) {
+                $adminData = Admin::where(['email'=>$request->email,'password'=>$request->password])->first();
+                session(['adminData'=>$adminData]);
+                return redirect('admin/dashboard');
+            }
+            else{
+                $adminData = auth()->attempt($request->only('email','password'));
             session(['adminData'=>$adminData]);
             return redirect('admin/dashboard');
+            }
         }
         else{
-            return redirect('admin/login')->with('error','Invalid Username/Password!!');
+            return redirect('admin/login')->with('error','Invalid Username or Email/Password!!');
         }
 
     }
